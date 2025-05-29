@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Croci Lignee Gotiche Italiane - Timeline Interattiva</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #2c1810 0%, #5d4037 100%);
+            color: #f5f5dc;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            color: #daa520;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #daa520, #cd853f);
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin: 40px 0;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .timeline-item:nth-child(odd) {
+            animation-delay: 0.2s;
+        }
+
+        .timeline-item:nth-child(even) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline-content {
+            background: rgba(139, 69, 19, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 0 60px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(218, 165, 32, 0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            background: rgba(139, 69, 19, 1);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: 0;
+            margin-right: 50%;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 50%;
+            margin-right: 0;
+        }
+
+        .timeline-date {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: #daa520;
+            color: #2c1810;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
+            z-index: 10;
+        }
+
+        .cross-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #daa520;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .cross-location {
+            font-style: italic;
+            color: #f4a460;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .cross-description {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: justify;
+            color: #f5f5dc;
+        }
+
+        .cross-features {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #daa520;
+        }
+
+        .features-title {
+            font-weight: bold;
+            color: #daa520;
+            margin-bottom: 8px;
+        }
+
+        .read-button {
+            background: linear-gradient(45deg, #daa520, #ffd700);
+            color: #2c1810;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .read-button:hover {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(218, 165, 32, 0.4);
+        }
+
+        .read-button:active {
+            transform: translateY(0);
+        }
+
+        .read-button.reading {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .speaker-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            font-size: 1.1em;
+            line-height: 1.6;
+            background: rgba(139, 69, 19, 0.3);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(218, 165, 32, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                margin-left: 60px;
+                margin-right: 20px;
+            }
+
+            .timeline-date {
+                left: 30px;
+                transform: translate(-50%, -50%);
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🕊️ Croci Lignee Gotiche Italiane</h1>
+        <p class="subtitle">Un viaggio attraverso l'arte sacra medievale italiana</p>
+        
+        <div class="intro">
+            <p>Le croci lignee gotiche rappresentano una delle più raffinate espressioni dell'arte sacra italiana tra il XIII e XIV secolo. Questi capolavori, scolpiti e dipinti su legno, testimoniano l'evoluzione stilistica dal romanico al gotico e riflettono la profonda spiritualità del periodo medievale.</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">1250-1260</div>
+                <div class="timeline-content">
+                    <h3 class="cross-title">Croce di San Damiano</h3>
+                    <p class="cross-location">Assisi, Basilica di Santa Chiara</p>
+                    <p class="cross-description">Sebbene di origine bizantina del XII secolo, questa croce rappresenta il prototipo delle croci dipinte italiane. Fu davanti a questa croce che San Francesco ricevette la chiamata divina. La sua iconografia influenzò profondamente l'arte sacra successiva, con il Cristo vivo e trionfante sulla morte.</p>
+                    <div class="cross-features">
+                        <p class="features-title">Caratteristiche principali:</p>
+                        <p>• Tecnica: tempera su tavola lignea<br>
+                        • Cristo vivo con occhi aperti<br>
+                        • Scene della Passione e figure di santi<br>
+                        • Stile bizantino con influenze locali</p>
+                    </div>
+                    <button class="read-button" onclick="readText(this)">
+                        <span class="speaker-icon">🔊</span>
+                        Ascolta descrizione
+                    </button>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">1280-1290</div>
+                <div class="timeline-content">
+                    <h3 class="cross-title">Crocifisso di Cimabue</h3>
+                    <p class="cross-location">Arezzo, Pieve di Santa Maria</p>
+                    <p class="cross-description">Quest'opera di Cimabue segna la transizione verso il gotico italiano. Il Cristo mostra ancora influenze bizantine ma con una maggiore espressività e naturalismo. La croce presenta una ricca decorazione con scene della Passione e figure di dolenti, anticipando gli sviluppi dell'arte giottesca.</p>
+                    <div class="cross-features">
+                        <p class="features-title">Innovazioni stilistiche:</p>
+                        <p>• Maggiore espressività del volto di Cristo<br>
+                        • Trattamento più naturalistico del corpo<br>
+                        • Uso della prospettiva negli sfondi<br>
+                        • Palette cromatica più ricca e sfumata</p>
+                    </div>
+                    <button class="read-button" onclick="readText(this)">
+                        <span class="speaker-icon">🔊</span>
+                        Ascolta descrizione
+                    </button>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">1300-1310</div>
+                <div class="timeline-content">
+                    <h3 class="cross-title">Crocifisso di Giotto</h3>
+                    <p class="cross-location">Firenze, Chiesa di Santa Maria Novella</p>
+                    <p class="cross-description">Il crocifisso di Giotto rappresenta una rivoluzione nell'arte sacra. L'artista abbandona definitivamente i canoni bizantini per creare un'immagine di Cristo profondamente umana e commovente. Il corpo mostra un naturalismo senza precedenti, con un chiaroscuro che dona volume e tridimensionalità.</p>
+                    <div class="cross-features">
+                        <p class="features-title">Rivoluzione giottesca:</p>
+                        <p>• Cristo completamente umano e sofferente<br>
+                        • Modellato plastico del corpo<br>
+                        • Espressione di dolore autentico<br>
+                        • Abbandono della rigidità bizantina</p>
+                    </div>
+                    <button class="read-button" onclick="readText(this)">
+                        <span class="speaker-icon">🔊</span>
+                        Ascolta descrizione
+                    </button>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">1320-1330</div>
+                <div class="timeline-content">
+                    <h3 class="cross-title">Croce di Pietro Lorenzetti</h3>
+                    <p class="cross-location">Assisi, Basilica Inferiore di San Francesco</p>
+                    <p class="cross-description">Pietro Lorenzetti, maestro senese del gotico, crea una croce che unisce la tradizione senese del colore alla nuova espressività giottesca. L'opera presenta una straordinaria ricchezza cromatica e una profonda intensità emotiva, con particolare attenzione ai dettagli decorativi tipici della scuola senese.</p>
+                    <div class="cross-features">
+                        <p class="features-title">Scuola senese:</p>
+                        <p>• Ricchezza cromatica e decorativa<br>
+                        • Influenza dell'arte gotica francese<br>
+                        • Attenzione ai dettagli ornamentali<br>
+                        • Sintesi tra tradizione e innovazione</p>
+                    </div>
+                    <button class="read-button" onclick="readText(this)">
+                        <span class="speaker-icon">🔊</span>
+                        Ascolta descrizione
+                    </button>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">1350-1360</div>
+                <div class="timeline-content">
+                    <h3 class="cross-title">Crocifisso di Orcagna</h3>
+                    <p class="cross-location">Firenze, Chiesa di Santo Spirito</p>
+                    <p class="cross-description">Andrea Orcagna rappresenta l'evoluzione del gotico fiorentino verso forme più solenni e monumentali. La sua croce mostra un ritorno a una maggiore ieraticità, pur mantenendo le conquiste naturalistiche del periodo precedente. L'opera riflette il clima spirituale più austero della metà del XIV secolo.</p>
+                    <div class="cross-features">
+                        <p class="features-title">Gotico maturo:</p>
+                        <p>• Monumentalità e solennità<br>
+                        • Equilibrio tra naturalismo e spiritualità<br>
+                        • Influenza dell'architettura gotica<br>
+                        • Ricchezza nella decorazione marginale</p>
+                    </div>
+                    <button class="read-button" onclick="readText(this)">
+                        <span class="speaker-icon">🔊</span>
+                        Ascolta descrizione
+                    </button>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">1380-1400</div>
+                <div class="timeline-content">
+                    <h3 class="cross-title">Croce del Maestro di San Francesco</h3>
+                    <p class="cross-location">Perugia, Galleria Nazionale dell'Umbria</p>
+                    <p class="cross-description">Quest'opera del tardo gotico umbro rappresenta la sintesi tra le diverse tradizioni regionali italiane. La croce mostra l'influenza della spiritualità francescana nella rappresentazione di un Cristo sofferente ma sereno, circondato da una ricca iconografia che include scene della vita di Cristo e figure di santi francescani.</p>
+                    <div class="cross-features">
+                        <p class="features-title">Tardo gotico:</p>
+                        <p>• Sintesi delle tradizioni regionali<br>
+                        • Spiritualità francescana<br>
+                        • Iconografia complessa e narrativa<br>
+                        • Transizione verso il Rinascimento</p>
+                    </div>
+                    <button class="read-button" onclick="readText(this)">
+                        <span class="speaker-icon">🔊</span>
+                        Ascolta descrizione
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funzione per la lettura vocale
+        function readText(button) {
+            // Controlla se la sintesi vocale è supportata
+            if (!window.speechSynthesis) {
+                alert('La sintesi vocale non è supportata dal tuo browser. Prova con Chrome, Firefox o Safari.');
+                return;
+            }
+
+            // Ferma qualsiasi lettura in corso
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                document.querySelectorAll('.read-button').forEach(btn => {
+                    btn.classList.remove('reading');
+                    btn.innerHTML = '<span class="speaker-icon">🔊</span>Ascolta descrizione';
+                });
+                return;
+            }
+
+            const content = button.parentElement;
+            const title = content.querySelector('.cross-title').textContent;
+            const location = content.querySelector('.cross-location').textContent;
+            const description = content.querySelector('.cross-description').textContent;
+            const features = content.querySelector('.cross-features p:last-child').textContent;
+
+            const fullText = `${title}. ${location}. ${description} ${features}`;
+
+            const utterance = new SpeechSynthesisUtterance(fullText);
+            utterance.lang = 'it-IT';
+            utterance.rate = 0.8;
+            utterance.pitch = 1;
+
+            // Reset tutti i pulsanti
+            document.querySelectorAll('.read-button').forEach(btn => {
+                btn.classList.remove('reading');
+                btn.innerHTML = '<span class="speaker-icon">🔊</span>Ascolta descrizione';
+            });
+
+            // Imposta il pulsante corrente come attivo
+            button.classList.add('reading');
+            button.innerHTML = '<span class="speaker-icon">⏹️</span>Ferma lettura';
+
+            utterance.onend = function() {
+                button.classList.remove('reading');
+                button.innerHTML = '<span class="speaker-icon">🔊</span>Ascolta descrizione';
+            };
+
+            utterance.onerror = function(event) {
+                console.error('Errore sintesi vocale:', event);
+                button.classList.remove('reading');
+                button.innerHTML = '<span class="speaker-icon">🔊</span>Ascolta descrizione';
+                alert('Errore nella sintesi vocale. Riprova tra qualche secondo.');
+            };
+
+            try {
+                window.speechSynthesis.speak(utterance);
+            } catch (error) {
+                console.error('Errore nell\'avvio della sintesi vocale:', error);
+                button.classList.remove('reading');
+                button.innerHTML = '<span class="speaker-icon">🔊</span>Ascolta descrizione';
+                alert('Sintesi vocale non disponibile. Il browser potrebbe non supportare questa funzionalità.');
+            }
+        }
+
+        // Animazione di ingresso degli elementi
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // Effetto particelle di sfondo
+        function createParticles() {
+            const particles = document.createElement('div');
+            particles.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: -1;
+            `;
+            document.body.appendChild(particles);
+
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: absolute;
+                    width: 2px;
+                    height: 2px;
+                    background: rgba(218, 165, 32, 0.3);
+                    border-radius: 50%;
+                    animation: float ${5 + Math.random() * 10}s infinite ease-in-out;
+                    top: ${Math.random() * 100}%;
+                    left: ${Math.random() * 100}%;
+                `;
+                particles.appendChild(particle);
+            }
+        }
+
+        // CSS per le particelle animate
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+                50% { transform: translateY(-20px) rotate(180deg); opacity: 0.6; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        createParticles();
+    </script>
+</body>
+</html>
